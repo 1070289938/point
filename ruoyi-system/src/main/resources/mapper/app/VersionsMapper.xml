@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.VersionsMapper">
+
+    <resultMap type="Versions" id="VersionsResult">
+        <result property="id" column="id"/>
+        <result property="versions" column="versions"/>
+        <result property="path" column="path"/>
+        <result property="createTime" column="create_time"/>
+
+    </resultMap>
+
+    <sql id="selectVersionsVo">
+        select id, versions, `path`, create_time
+        from versions
+    </sql>
+
+    <select id="selectVersionsList" parameterType="Versions" resultMap="VersionsResult">
+        <include refid="selectVersionsVo"/>
+        <where>
+            <if test="versions != null  and versions != ''">and versions = #{versions}</if>
+            <if test="path != null  and path != ''">and `path` = #{path}</if>
+        </where>
+    </select>
+
+    <select id="selectVersionsById" parameterType="Long" resultMap="VersionsResult">
+        <include refid="selectVersionsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertVersions" parameterType="Versions" useGeneratedKeys="true" keyProperty="id">
+        insert into versions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="versions != null">versions,</if>
+            <if test="path != null">`path`,</if>
+            <if test="createTime!=null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="versions != null">#{versions},</if>
+            <if test="path != null">#{path},</if>
+            <if test="createTime!=null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateVersions" parameterType="Versions">
+        update versions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="versions != null">versions = #{versions},</if>
+            <if test="path != null">`path` = #{path},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVersionsById" parameterType="Long">
+        delete
+        from versions
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteVersionsByIds" parameterType="String">
+        delete from versions where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectVersionsByNew" resultMap="VersionsResult">
+        SELECT *
+        FROM `versions`
+        ORDER BY `create_time` DESC LIMIT 0,1
+    </select>
+
+</mapper>

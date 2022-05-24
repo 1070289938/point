@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AmountRecordMapper">
+
+    <resultMap type="AmountRecord" id="AmountRecordResult">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="money" column="money"/>
+        <result property="details" column="details"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectAmountRecordVo">
+        select id, order_id, user_id, money, details, type, create_time
+        from amount_record
+    </sql>
+
+    <select id="selectAmountRecordList" parameterType="AmountRecord" resultMap="AmountRecordResult">
+        <include refid="selectAmountRecordVo"/>
+        <where>
+            <if test="orderId != null  and orderId != ''">and order_id = #{orderId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="money != null ">and money = #{money}</if>
+            <if test="details != null  and details != ''">and details = #{details}</if>
+            <if test="type != null ">and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectAmountRecordById" parameterType="Long" resultMap="AmountRecordResult">
+        <include refid="selectAmountRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAmountRecord" parameterType="AmountRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into amount_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="money != null">money,</if>
+            <if test="details != null">details,</if>
+            <if test="type != null">type,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="money != null">#{money},</if>
+            <if test="details != null">#{details},</if>
+            <if test="type != null">#{type},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAmountRecord" parameterType="AmountRecord">
+        update amount_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="money != null">money = #{money},</if>
+            <if test="details != null">details = #{details},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAmountRecordById" parameterType="Long">
+        delete
+        from amount_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAmountRecordByIds" parameterType="String">
+        delete from amount_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getMoney" resultType="Long">
+        SELECT IFNULL(SUM(money), 0) money
+        FROM `amount_record`
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAmountRecordByUserId" resultMap="AmountRecordResult">
+        SELECT *
+        FROM `amount_record`
+        WHERE user_id = #{userId}
+        ORDER BY `create_time` DESC
+    </select>
+
+</mapper>

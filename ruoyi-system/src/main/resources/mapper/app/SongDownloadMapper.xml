@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SongDownloadMapper">
+
+    <resultMap type="SongDownload" id="SongDownloadResult">
+        <result property="id" column="id"/>
+        <result property="songId" column="song_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSongDownloadVo">
+        select id, song_id, user_id, create_time
+        from song_download
+    </sql>
+
+    <select id="selectSongDownloadList" parameterType="SongDownload" resultMap="SongDownloadResult">
+        <include refid="selectSongDownloadVo"/>
+        <where>
+            <if test="songId != null ">and song_id = #{songId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectSongDownloadById" parameterType="Long" resultMap="SongDownloadResult">
+        <include refid="selectSongDownloadVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSongDownload" parameterType="SongDownload" useGeneratedKeys="true" keyProperty="id">
+        insert into song_download
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="songId != null">song_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="songId != null">#{songId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSongDownload" parameterType="SongDownload">
+        update song_download
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="songId != null">song_id = #{songId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSongDownloadById" parameterType="Long">
+        delete
+        from song_download
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSongDownloadByIds" parameterType="String">
+        delete from song_download where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectDownloadCount" resultType="Integer">
+        select count(1)
+        from `song_download`
+        where song_id = #{id}
+    </select>
+
+    <select id="selectDownloadIsDownload" resultMap="SongDownloadResult">
+        SELECT *
+        FROM `song_download`
+        WHERE song_id = #{songId}
+          AND user_id = #{userId}
+          limit 0,1
+    </select>
+
+
+</mapper>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改歌曲代码')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-songCode-edit" th:object="${songCode}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">代码名称：</label>
+                <div class="col-sm-8">
+                    <input name="name" th:field="*{name}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">歌曲id：</label>
+                <div class="col-sm-8">
+                    <input name="songId" th:field="*{songId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">歌曲代码：</label>
+                <div class="col-sm-8">
+                    <textarea name="code" class="form-control">[[*{code}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">歌曲播放倍率：</label>
+                <div class="col-sm-8">
+                    <input name="speed" th:field="*{speed}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">长延迟：</label>
+                <div class="col-sm-8">
+                    <input name="longTime" th:field="*{longTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">默认延迟：</label>
+                <div class="col-sm-8">
+                    <input name="defaultTime" th:field="*{defaultTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">短延迟：</label>
+                <div class="col-sm-8">
+                    <input name="shortTime" th:field="*{shortTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">超短延迟：</label>
+                <div class="col-sm-8">
+                    <input name="veryShortTime" th:field="*{veryShortTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">删除时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="deleteTime" th:value="${#dates.format(songCode.deleteTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/songCode";
+        $("#form-songCode-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-songCode-edit').serialize());
+            }
+        }
+
+        $("input[name='deleteTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

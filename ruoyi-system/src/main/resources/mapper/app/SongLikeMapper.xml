@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SongLikeMapper">
+
+    <resultMap type="SongLike" id="SongLikeResult">
+        <result property="id" column="id"/>
+        <result property="songId" column="song_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="deleteTime" column="delete_time"/>
+    </resultMap>
+
+    <sql id="selectSongLikeVo">
+        select id, song_id, user_id, create_time, delete_time
+        from song_like
+    </sql>
+
+    <select id="selectSongLikeList" parameterType="SongLike" resultMap="SongLikeResult">
+        <include refid="selectSongLikeVo"/>
+        <where>
+            <if test="songId != null ">and song_id = #{songId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="deleteTime != null ">and delete_time = #{deleteTime}</if>
+        </where>
+    </select>
+
+    <select id="selectSongLikeById" parameterType="Long" resultMap="SongLikeResult">
+        <include refid="selectSongLikeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSongLike" parameterType="SongLike" useGeneratedKeys="true" keyProperty="id">
+        insert into song_like
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="songId != null">song_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="deleteTime != null">delete_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="songId != null">#{songId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="deleteTime != null">#{deleteTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSongLike" parameterType="SongLike">
+        update song_like
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="songId != null">song_id = #{songId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="deleteTime != null">delete_time = #{deleteTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSongLikeById" parameterType="Long">
+        delete
+        from song_like
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSongLikeByIds" parameterType="String">
+        delete from song_like where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectSongLikeCount" resultType="Integer">
+        SELECT COUNT(1)
+        FROM `song_like`
+        WHERE song_id = #{id}
+          AND `delete_time` IS NULL
+    </select>
+
+    <select id="selectSongLikeIsLike" resultMap="SongLikeResult">
+        SELECT *
+        FROM `song_like`
+        WHERE user_id = #{userId}
+          AND song_id = #{songId}
+          AND `delete_time` IS NULL
+limit 0,1
+    </select>
+
+
+</mapper>

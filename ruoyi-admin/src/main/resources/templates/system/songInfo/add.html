@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增歌曲详情')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-songInfo-add">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">歌曲名称：</label>
+                <div class="col-sm-8">
+                    <input name="name" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">歌曲图片：</label>
+                <div class="col-sm-8">
+                    <input name="headImg" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">发布用户id：</label>
+                <div class="col-sm-8">
+                    <input name="userId" class="form-control" value="1" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">标价：</label>
+                <div class="col-sm-8">
+                    <input name="price" value="0" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">详情：</label>
+                <div class="col-sm-8">
+                    <textarea name="details" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">歌曲代码：</label>
+                <div class="col-sm-8">
+                    <textarea name="code" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">代码类型：</label>
+                <div class="col-sm-8">
+                    <input name="codeType" value="1" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">歌曲播放倍率：</label>
+                <div class="col-sm-8">
+                    <input name="speed" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">长延迟：</label>
+                <div class="col-sm-8">
+                    <input name="longTime" class="form-control" value="800" type="text">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">默认延迟：</label>
+                <div class="col-sm-8">
+                    <input name="defaultTime" class="form-control" value="400" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">短延迟：</label>
+                <div class="col-sm-8">
+                    <input name="shortTime" class="form-control" value="200" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">超短延迟：</label>
+                <div class="col-sm-8">
+                    <input name="veryShortTime" value="100" class="form-control" type="text">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/songInfo"
+        $("#form-songInfo-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-songInfo-add').serialize());
+            }
+        }
+
+        $("input[name='deleteTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

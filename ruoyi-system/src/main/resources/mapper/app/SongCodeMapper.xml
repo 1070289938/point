@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SongCodeMapper">
+    
+    <resultMap type="SongCode" id="SongCodeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="songId"    column="song_id"    />
+        <result property="code"    column="code"    />
+        <result property="codeType"    column="code_type"    />
+        <result property="speed"    column="speed"    />
+        <result property="longTime"    column="long_time"    />
+        <result property="defaultTime"    column="default_time"    />
+        <result property="shortTime"    column="short_time"    />
+        <result property="veryShortTime"    column="very_short_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleteTime"    column="delete_time"    />
+    </resultMap>
+
+    <sql id="selectSongCodeVo">
+        select id, name, song_id, code, code_type, speed, long_time, default_time, short_time, very_short_time, create_time, update_time, delete_time from song_code
+    </sql>
+
+    <select id="selectSongCodeList" parameterType="SongCode" resultMap="SongCodeResult">
+        <include refid="selectSongCodeVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="songId != null "> and song_id = #{songId}</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="codeType != null  and codeType != ''"> and code_type = #{codeType}</if>
+            <if test="speed != null "> and speed = #{speed}</if>
+            <if test="longTime != null "> and long_time = #{longTime}</if>
+            <if test="defaultTime != null "> and default_time = #{defaultTime}</if>
+            <if test="shortTime != null "> and short_time = #{shortTime}</if>
+            <if test="veryShortTime != null "> and very_short_time = #{veryShortTime}</if>
+            <if test="deleteTime != null "> and delete_time = #{deleteTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSongCodeById" parameterType="Long" resultMap="SongCodeResult">
+        <include refid="selectSongCodeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSongCode" parameterType="SongCode" useGeneratedKeys="true" keyProperty="id">
+        insert into song_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="songId != null">song_id,</if>
+            <if test="code != null">code,</if>
+            <if test="codeType != null">code_type,</if>
+            <if test="speed != null">speed,</if>
+            <if test="longTime != null">long_time,</if>
+            <if test="defaultTime != null">default_time,</if>
+            <if test="shortTime != null">short_time,</if>
+            <if test="veryShortTime != null">very_short_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="deleteTime != null">delete_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="songId != null">#{songId},</if>
+            <if test="code != null">#{code},</if>
+            <if test="codeType != null">#{codeType},</if>
+            <if test="speed != null">#{speed},</if>
+            <if test="longTime != null">#{longTime},</if>
+            <if test="defaultTime != null">#{defaultTime},</if>
+            <if test="shortTime != null">#{shortTime},</if>
+            <if test="veryShortTime != null">#{veryShortTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="deleteTime != null">#{deleteTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSongCode" parameterType="SongCode">
+        update song_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="songId != null">song_id = #{songId},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="codeType != null">code_type = #{codeType},</if>
+            <if test="speed != null">speed = #{speed},</if>
+            <if test="longTime != null">long_time = #{longTime},</if>
+            <if test="defaultTime != null">default_time = #{defaultTime},</if>
+            <if test="shortTime != null">short_time = #{shortTime},</if>
+            <if test="veryShortTime != null">very_short_time = #{veryShortTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="deleteTime != null">delete_time = #{deleteTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSongCodeById" parameterType="Long">
+        delete from song_code where id = #{id}
+    </delete>
+
+    <delete id="deleteSongCodeByIds" parameterType="String">
+        delete from song_code where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

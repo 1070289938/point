@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RegistrationCodeMapper">
+
+    <resultMap type="RegistrationCode" id="RegistrationCodeResult">
+        <result property="id"    column="id"    />
+        <result property="qq"    column="qq"    />
+        <result property="code"    column="code"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="hoursUse"    column="hours_use"    />
+    </resultMap>
+
+    <sql id="selectRegistrationCodeVo">
+        select id, qq, code, user_id, create_time, hours_use from registration_code
+    </sql>
+
+    <select id="selectRegistrationCodeList" parameterType="RegistrationCode" resultMap="RegistrationCodeResult">
+        <include refid="selectRegistrationCodeVo"/>
+        <where>
+            <if test="qq != null  and qq != ''"> and qq = #{qq}</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="hoursUse != null "> and hours_use = #{hoursUse}</if>
+        </where>
+    </select>
+
+    <select id="selectRegistrationCodeById" parameterType="Long" resultMap="RegistrationCodeResult">
+        <include refid="selectRegistrationCodeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRegistrationCode" parameterType="RegistrationCode" useGeneratedKeys="true" keyProperty="id">
+        insert into registration_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="qq != null">qq,</if>
+            <if test="code != null">code,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="hoursUse != null">hours_use,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="qq != null">#{qq},</if>
+            <if test="code != null">#{code},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="hoursUse != null">#{hoursUse},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRegistrationCode" parameterType="RegistrationCode">
+        update registration_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="qq != null">qq = #{qq},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="hoursUse != null">hours_use = #{hoursUse},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRegistrationCodeById" parameterType="Long">
+        delete from registration_code where id = #{id}
+    </delete>
+
+    <delete id="deleteRegistrationCodeByIds" parameterType="String">
+        delete from registration_code where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectRegistrationCodeByCode" resultMap="RegistrationCodeResult">
+        SELECT * FROM `registration_code` WHERE `code` = #{code}
+    </select>
+
+</mapper>

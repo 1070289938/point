@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SongCollectMapper">
+
+    <resultMap type="SongCollect" id="SongCollectResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="songId" column="song_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="deleteTime" column="delete_time"/>
+    </resultMap>
+
+    <sql id="selectSongCollectVo">
+        select id, user_id, song_id, create_time, delete_time
+        from song_collect
+    </sql>
+
+    <select id="selectSongCollectList" parameterType="SongCollect" resultMap="SongCollectResult">
+        <include refid="selectSongCollectVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="songId != null ">and song_id = #{songId}</if>
+            <if test="deleteTime != null ">and delete_time = #{deleteTime}</if>
+        </where>
+    </select>
+
+    <select id="selectSongCollectById" parameterType="Long" resultMap="SongCollectResult">
+        <include refid="selectSongCollectVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSongCollect" parameterType="SongCollect" useGeneratedKeys="true" keyProperty="id">
+        insert into song_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="songId != null">song_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="deleteTime != null">delete_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="songId != null">#{songId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="deleteTime != null">#{deleteTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSongCollect" parameterType="SongCollect">
+        update song_collect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="songId != null">song_id = #{songId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="deleteTime != null">delete_time = #{deleteTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSongCollectById" parameterType="Long">
+        delete
+        from song_collect
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSongCollectByIds" parameterType="String">
+        delete from song_collect where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSongCollectIsCollect" resultMap="SongCollectResult">
+        SELECT *
+        FROM `song_collect`
+        WHERE user_id = #{userId}
+          AND song_id = #{songId}
+          AND `delete_time` IS NULL
+    </select>
+
+
+</mapper>

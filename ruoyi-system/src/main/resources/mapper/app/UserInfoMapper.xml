@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserInfoMapper">
+
+    <resultMap type="UserInfo" id="UserInfoResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userNick"    column="user_nick"    />
+        <result property="userHead"    column="user_head"    />
+        <result property="password"    column="password"    />
+        <result property="mail"    column="mail"    />
+        <result property="phone"    column="phone"    />
+        <result property="QQ"    column="QQ"    />
+        <result property="parentRecommendCode"    column="parent_recommend_code"    />
+        <result property="recommendCode"    column="recommend_code"    />
+        <result property="paymentCode"    column="payment_code"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+
+
+    <select id="login" parameterType="com.ruoyi.system.domain.pojo.user.LoginPojo" resultMap="UserInfoResult">
+        SELECT * FROM `user_info` WHERE (user_name = #{account} OR phone=#{account}) AND `password` = #{password}
+    </select>
+
+
+
+
+
+
+
+
+
+    <sql id="selectUserInfoVo">
+        select id, user_name, user_nick, user_head, password, mail, phone, QQ, parent_recommend_code, recommend_code, payment_code, create_time from user_info
+    </sql>
+
+    <select id="selectUserInfoList" parameterType="UserInfo" resultMap="UserInfoResult">
+        <include refid="selectUserInfoVo"/>
+        <where>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userNick != null  and userNick != ''"> and user_nick = #{userNick}</if>
+            <if test="userHead != null  and userHead != ''"> and user_head = #{userHead}</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="mail != null  and mail != ''"> and mail = #{mail}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="QQ != null  and QQ != ''"> and QQ = #{QQ}</if>
+            <if test="parentRecommendCode != null  and parentRecommendCode != ''"> and parent_recommend_code = #{parentRecommendCode}</if>
+            <if test="recommendCode != null  and recommendCode != ''"> and recommend_code = #{recommendCode}</if>
+            <if test="paymentCode != null  and paymentCode != ''"> and payment_code = #{paymentCode}</if>
+        </where>
+    </select>
+
+    <select id="selectUserInfoById" parameterType="Integer" resultMap="UserInfoResult">
+        <include refid="selectUserInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertUserInfo" parameterType="UserInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="userNick != null">user_nick,</if>
+            <if test="userHead != null">user_head,</if>
+            <if test="password != null">password,</if>
+            <if test="mail != null">mail,</if>
+            <if test="phone != null">phone,</if>
+            <if test="QQ != null">QQ,</if>
+            <if test="parentRecommendCode != null">parent_recommend_code,</if>
+            <if test="recommendCode != null">recommend_code,</if>
+            <if test="paymentCode != null">payment_code,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="userNick != null">#{userNick},</if>
+            <if test="userHead != null">#{userHead},</if>
+            <if test="password != null">#{password},</if>
+            <if test="mail != null">#{mail},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="QQ != null">#{QQ},</if>
+            <if test="parentRecommendCode != null">#{parentRecommendCode},</if>
+            <if test="recommendCode != null">#{recommendCode},</if>
+            <if test="paymentCode != null">#{paymentCode},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserInfo" parameterType="UserInfo">
+        update user_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userNick != null">user_nick = #{userNick},</if>
+            <if test="userHead != null">user_head = #{userHead},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="mail != null">mail = #{mail},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="QQ != null">QQ = #{QQ},</if>
+            <if test="parentRecommendCode != null">parent_recommend_code = #{parentRecommendCode},</if>
+            <if test="recommendCode != null">recommend_code = #{recommendCode},</if>
+            <if test="paymentCode != null">payment_code = #{paymentCode},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserInfoById" parameterType="Long">
+        delete from user_info where id = #{id}
+    </delete>
+
+    <delete id="deleteUserInfoByIds" parameterType="String">
+        delete from user_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectUserInfoPhone" resultMap="UserInfoResult">
+        select * from `user_info` where `phone` = #{phone}
+    </select>
+
+
+    <select id="selectUserByUserName" resultMap="UserInfoResult">
+        select * from `user_info` where `user_name` = #{userName}
+    </select>
+    <select id="selectUserByRecommendCode" resultMap="UserInfoResult">
+        select * from `user_info` where `recommend_code` = #{recommendCode}
+    </select>
+
+</mapper>
