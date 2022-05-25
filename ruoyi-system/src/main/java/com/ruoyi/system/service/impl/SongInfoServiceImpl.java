@@ -126,46 +126,34 @@ public class SongInfoServiceImpl implements ISongInfoService {
         return songInfoMapper.deleteSongInfoById(id);
     }
 
+    /**
+     * 查询所有歌曲
+     * @param param
+     * @return
+     * @throws LogicException
+     */
     @Override
     public QuerySongPojo.OutPut querySong(ParamPojo<QuerySongPojo.Param> param) throws LogicException {
 
         PageMethod.startPage(param.getData().getPage(), param.getData().getSize());
+        param.getData().setUserId(param.getUserId());
         //查询歌曲
-        List<SongVO> songList = songInfoMapper.selectSongVOListAll();
+        List<SongVO> songList = songInfoMapper.selectSongVOListAll(param.getData());
 
-        List<SongVO> songVOList = new ArrayList<>();
-        for (SongVO songInfo : songList) {
-            //写入用户
-            UserInfo userInfo = userInfoCache.getUserInfo(songInfo.getUserId());
-            UserVO userVO = new UserVO() {{
-                setUserName(userInfo.getUserName());
-                setUserNick(userInfo.getUserNick());
-                setUserHead(userInfo.getUserHead());
-            }};
-            //查询当前用户是否点赞歌曲
-            if (param.getUserId() != null || param.getUserId() != 0) {
-                SongLike isLink = songLikeMapper.selectSongLikeIsLike(param.getUserId(), songInfo.getId());
-                songInfo.setIsLink(isLink == null ? 0 : 1);
-                //查询用户是否已下载
-                SongDownload download = songDownloadMapper.selectDownloadIsDownload(param.getUserId(), songInfo.getId());
-                songInfo.setIsDownload(download == null ? 0 : 1);
-                //下载了才能收藏
-                if (download != null) {
-                    SongCollect songCollect = songCollectMapper.selectSongCollectIsCollect(param.getUserId(), songInfo.getId());
-                    songInfo.setCollect(songCollect == null ? 0 : 1);
-                }
-
-            }
-            songInfo.setUserVO(userVO);
-            songVOList.add(songInfo);
-        }
+        songList = replenishSongVoList(songList, param.getUserId());
         QuerySongPojo.OutPut outPut = new QuerySongPojo.OutPut();
-        outPut.setSongVOList(songVOList);
+        outPut.setSongVOList(songList);
 
         return outPut;
 
     }
 
+    /**
+     * 给歌曲点赞
+     * @param param
+     * @return
+     * @throws LogicException
+     */
     @Override
     public LikeSongPojo.OutPut likeSong(ParamPojo<LikeSongPojo.Param> param) throws LogicException {
         int songId = param.getData().getSongId();
@@ -187,6 +175,12 @@ public class SongInfoServiceImpl implements ISongInfoService {
         return outPut;
     }
 
+    /**
+     * 收藏歌曲
+     * @param param
+     * @return
+     * @throws LogicException
+     */
     @Override
     public CollectSongPojo.OutPut collectSong(ParamPojo<CollectSongPojo.Param> param) throws LogicException {
         int songId = param.getData().getSongId();
@@ -209,6 +203,12 @@ public class SongInfoServiceImpl implements ISongInfoService {
         }
     }
 
+    /**
+     * 购买歌曲
+     * @param param
+     * @return
+     * @throws LogicException
+     */
     @Override
     public BuySongPojo.OutPut buySong(ParamPojo<BuySongPojo.Param> param) throws LogicException {
         int songId = param.getData().getSongId();
@@ -217,7 +217,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
         UserInfo userInfo = userInfoCache.getUserInfo(userId);
 
-        if (userInfo.getPaymentCode()==null){
+        if (userInfo.getPaymentCode() == null) {
             throw new LogicException(LogicException.Type.PARAM_ERROR, "未设置烛火密码!");
         }
 
@@ -225,8 +225,8 @@ public class SongInfoServiceImpl implements ISongInfoService {
             throw new LogicException(LogicException.Type.PARAM_ERROR, "烛火密码错误!");
         }
 
-        SongDownload download = songDownloadMapper.selectDownloadIsDownload(userId,songId);
-        if (download!=null){
+        SongDownload download = songDownloadMapper.selectDownloadIsDownload(userId, songId);
+        if (download != null) {
             throw new LogicException(LogicException.Type.ERROR, "无法重复购买!");
         }
         //当前用户金额
@@ -248,10 +248,61 @@ public class SongInfoServiceImpl implements ISongInfoService {
         return outPut;
     }
 
+    /**
+     * 查询我的歌曲
+     * @param param
+     * @return
+     * @throws LogicException
+     */
     @Override
     public QuerySongPojo.OutPut queryMySong(ParamPojo<QuerySongPojo.Param> param) throws LogicException {
 
+        PageMethod.startPage(param.getData().getPage(), param.getData().getSize());
+        param.getData().setUserId(param.getUserId());
+        //查询歌曲
+        List<SongVO> songList = songInfoMapper.selectSongVOListByUserId(param.getData());
 
-        return null;
+        songList = replenishSongVoList(songList, param.getUserId());
+
+        QuerySongPojo.OutPut outPut = new QuerySongPojo.OutPut();
+        outPut.setSongVOList(songList);
+
+        return outPut;
+
     }
+
+    /**
+     * 补充歌曲内容
+     * @param songList
+     * @param userId
+     * @return
+     */
+    public List<SongVO> replenishSongVoList(List<SongVO> songList, Integer userId) {
+        List<SongVO> songVOList = new ArrayList<>();
+        for (SongVO songInfo : songList) {
+            //写入用户
+            UserInfo userInfo = userInfoCache.getUserInfo(songInfo.getUserId());
+            UserVO userVO = new UserVO() {{
+                setUserName(userInfo.getUserName());
+                setUserNick(userInfo.getUserNick());
+                setUserHead(userInfo.getUserHead());
+            }};
+            //查询当前用户是否点赞歌曲
+            if (userId != null || userId != 0) {
+                SongLike isLink = songLikeMapper.selectSongLikeIsLike(userId, songInfo.getId());
+                songInfo.setIsLink(isLink == null ? 0 : 1);
+                //查询用户是否已下载
+                SongDownload download = songDownloadMapper.selectDownloadIsDownload(userId, songInfo.getId());
+                songInfo.setIsDownload(download == null ? 0 : 1);
+                //查询用户是否已收藏
+                SongCollect songCollect = songCollectMapper.selectSongCollectIsCollect(userId, songInfo.getId());
+                songInfo.setCollect(songCollect == null ? 0 : 1);
+            }
+            songInfo.setUserVO(userVO);
+            songVOList.add(songInfo);
+        }
+        return songVOList;
+    }
+
+
 }

@@ -171,7 +171,6 @@ public class UserInfoServiceImpl implements IUserInfoService {
             throw new LogicException(LogicException.Type.PARAM_ERROR, "这个账号已经被注册过啦!");
         }
         //判断注册码是否正确
-
         RegistrationCode code = registrationCodeMapper.selectRegistrationCodeByCode(param.getCode());
 
         if (code == null) {
@@ -248,7 +247,15 @@ public class UserInfoServiceImpl implements IUserInfoService {
             if (!newData.getAccount().matches("^[A-Za-z0-9]+$")) {
                 throw new LogicException(LogicException.Type.PARAM_ERROR, "账号只能由字母或数字组成!");
             }
+            if (userInfo.getChangeAccount() == 0) {
+                throw new LogicException(LogicException.Type.ERROR, "账号只能修改一次!");
+            }
+            if (userInfoMapper.selectUserByUserName(newData.getAccount())!=null){
+                throw new LogicException(LogicException.Type.PARAM_ERROR, "这个账号已经被注册过啦!");
+            }
+
             userInfo.setUserName(newData.getAccount());
+            userInfo.setChangeAccount(0);
         }
         if (!StringUtils.isEmpty(newData.getNickName())) {
             userInfo.setUserNick(newData.getNickName());

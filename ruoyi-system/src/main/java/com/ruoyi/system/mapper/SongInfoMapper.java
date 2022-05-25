@@ -2,7 +2,9 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SongInfo;
+import com.ruoyi.system.domain.pojo.song.QuerySongPojo;
 import com.ruoyi.system.domain.pojo.vo.SongVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 歌曲详情Mapper接口
@@ -65,6 +67,13 @@ public interface SongInfoMapper
      * @param songInfo
      * @return
      */
-    List<SongVO> selectSongVOListAll();
+    List<SongVO> selectSongVOListAll(QuerySongPojo.Param param);
+
+    /**
+     * 根据用户id查询歌曲vo详情
+     * @param userId
+     * @return
+     */
+    List<SongVO> selectSongVOListByUserId(QuerySongPojo.Param param);
 
 }

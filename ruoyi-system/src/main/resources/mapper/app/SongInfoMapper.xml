@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SongInfoMapper">
 
     <resultMap type="SongInfo" id="SongInfoResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="headImg"    column="head_img"    />
-        <result property="userId"    column="user_id"    />
-        <result property="price"    column="price"    />
-        <result property="details"    column="details"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="deleteTime"    column="delete_time"    />
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="headImg" column="head_img"/>
+        <result property="userId" column="user_id"/>
+        <result property="price" column="price"/>
+        <result property="details" column="details"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleteTime" column="delete_time"/>
     </resultMap>
 
     <resultMap type="SongVO" id="SongVOResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="img"    column="head_img"    />
-        <result property="price"    column="price"    />
-        <result property="details"    column="details"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="userId"    column="user_id"    />
-        <result property="link"    column="link_count"    />
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="img" column="head_img"/>
+        <result property="price" column="price"/>
+        <result property="details" column="details"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="link" column="link_count"/>
 
-        <result property="download"    column="download_count"    />
+        <result property="download" column="download_count"/>
 
     </resultMap>
 
 
     <sql id="selectSongInfoVo">
-        select id, name, head_img, user_id, price, details, create_time, update_time, delete_time from song_info
+        select id,
+               name,
+               head_img,
+               user_id,
+               price,
+               details,
+               create_time,
+               update_time,
+               delete_time
+        from song_info
     </sql>
 
     <select id="selectSongInfoList" parameterType="SongInfo" resultMap="SongInfoResult">
         <include refid="selectSongInfoVo"/>
         <where>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="headImg != null  and headImg != ''"> and head_img = #{headImg}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="price != null "> and price = #{price}</if>
-            <if test="details != null  and details != ''"> and details = #{details}</if>
-            <if test="deleteTime != null "> and delete_time = #{deleteTime}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="headImg != null  and headImg != ''">and head_img = #{headImg}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="price != null ">and price = #{price}</if>
+            <if test="details != null  and details != ''">and details = #{details}</if>
+            <if test="deleteTime != null ">and delete_time = #{deleteTime}</if>
         </where>
     </select>
 
@@ -63,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="deleteTime != null">delete_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
             <if test="headImg != null">#{headImg},</if>
@@ -73,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="deleteTime != null">#{deleteTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSongInfo" parameterType="SongInfo">
@@ -92,7 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSongInfoById" parameterType="Long">
-        delete from song_info where id = #{id}
+        delete
+        from song_info
+        where id = #{id}
     </delete>
 
     <delete id="deleteSongInfoByIds" parameterType="String">
@@ -102,11 +113,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectSongVOListAll" resultMap="SongVOResult">
-        select id,`name`,head_img,price,details,create_time,user_id,
-               (select count(0) from `song_like` where `song_id`= i.`id`  AND `delete_time` IS NULL) link_count,
-               (select count(0) from `song_download` where `song_id`= i.`id`) download_count
-        from `song_info` i
+    <select id="selectSongVOListAll" resultMap="SongVOResult" parameterType="QuerySongPojo">
+        SELECT i.id,i.`name`,i.head_img,i.price,i.details,i.create_time,i.user_id,
+        (SELECT COUNT(0) FROM `song_like` WHERE `song_id`= i.`id` AND `delete_time` IS NULL) link_count,
+        (SELECT COUNT(0) FROM `song_download` WHERE `song_id`= i.`id`) download_count
+        FROM `song_info` i
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id`=i.`id`
+            WHERE c.`user_id`=#{userId}
+            AND c.delete_time IS NULL
+        </if>
+        <if test="isPay">
+           where i.price != 0
+        </if>
+        <if test="free">
+            where i.price = 0
+        </if>
+
+    </select>
+
+
+    <select id="selectSongVOListByUserId" resultMap="SongVOResult" parameterType="QuerySongPojo">
+        SELECT i.id,i.`name`,i.head_img,i.price,i.details,i.create_time,i.user_id,
+        (SELECT COUNT(0) FROM `song_like` WHERE `song_id`= i.`id` AND `delete_time` IS NULL) link_count,
+        (SELECT COUNT(0) FROM `song_download` WHERE `song_id`= i.`id`) download_count
+        FROM `song_info` i
+        INNER JOIN song_download d ON d.`song_id`=i.`id`
+        <choose>
+            <when test="collect">
+                INNER JOIN `song_collect` c ON c.`song_id`=i.`id`
+                WHERE c.`user_id`=#{userId}
+                AND c.delete_time IS NULL
+            </when>
+            <otherwise>
+                WHERE d.`user_id`=#{userId}
+            </otherwise>
+        </choose>
+
+
     </select>
 
 

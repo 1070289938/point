@@ -33,6 +33,11 @@ public class UserInfo extends BaseEntity {
     private String userName;
 
     /**
+     * 剩余更改账号次数
+     */
+    private Integer changeAccount;
+
+    /**
      * 用户昵称
      */
     @Excel(name = "用户昵称")

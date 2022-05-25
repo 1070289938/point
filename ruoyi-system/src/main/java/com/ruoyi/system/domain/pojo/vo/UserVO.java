@@ -14,6 +14,10 @@ public class UserVO {
      */
     private String userNick;
     /**
+     * 剩余更改账号次数
+     */
+    private Integer changeAccount;
+    /**
      * 用户头像
      */
     private String userHead;
@@ -35,7 +39,7 @@ public class UserVO {
      */
     private String recommendCode;
 
-    public static UserVO getUserVo(UserInfo info){
+    public static UserVO getUserVo(UserInfo info) {
         UserVO userVO = new UserVO();
         userVO.setUserName(info.getUserName());
         userVO.setUserNick(info.getUserNick());
@@ -44,6 +48,7 @@ public class UserVO {
         userVO.setPhone(info.getPhone());
         userVO.setQQ(info.getQQ());
         userVO.setRecommendCode(info.getRecommendCode());
+        userVO.setChangeAccount(info.getChangeAccount());
         return userVO;
     }
 
