@@ -6,9 +6,9 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://47.97.218.44:10087/miscellaneous?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: tengxin
-        password: GqjdMjR6WX5Zf61y
+        url: jdbc:mysql://47.98.199.59:3306/miscellaneous?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: en106lai
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -60,9 +60,9 @@ spring:
     #redis数据库
     database: 0
     #redis的ip地址
-    host: 47.97.218.44
+    host: 47.98.199.59
     #redis的端口
-    port: 6366
+    port: 6379
     #redis的密码
     password: ubAQ7HoJbwmNqO7K
     #redis连接超时时间

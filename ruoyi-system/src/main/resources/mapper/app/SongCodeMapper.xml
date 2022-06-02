@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SongCodeMapper">
-    
+
     <resultMap type="SongCode" id="SongCodeResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSongCodeList" parameterType="SongCode" resultMap="SongCodeResult">
         <include refid="selectSongCodeVo"/>
-        <where>  
+        <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="songId != null "> and song_id = #{songId}</if>
             <if test="code != null  and code != ''"> and code = #{code}</if>
@@ -39,12 +39,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deleteTime != null "> and delete_time = #{deleteTime}</if>
         </where>
     </select>
-    
+
     <select id="selectSongCodeById" parameterType="Long" resultMap="SongCodeResult">
         <include refid="selectSongCodeVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertSongCode" parameterType="SongCode" useGeneratedKeys="true" keyProperty="id">
         insert into song_code
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -101,10 +101,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteSongCodeByIds" parameterType="String">
-        delete from song_code where id in 
+        delete from song_code where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+
+    <select id="selectSongCodeBySongId" resultMap="SongCodeResult">
+        SELECT * FROM `song_code` WHERE song_id=#{songId}
+    </select>
 
 </mapper>

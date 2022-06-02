@@ -21,7 +21,7 @@ public class SongInfo extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 歌曲id */
-    private Long id;
+    private Integer id;
 
     /** 歌曲名称 */
     @Excel(name = "歌曲名称")

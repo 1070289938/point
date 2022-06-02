@@ -8,6 +8,7 @@ public enum AmountRecordEnum {
 
     BUY_SONG(3,"购买歌曲"),
 
+    SIGN(4,"QQ群签到奖励"),
     ;
 
     public String getContent() {

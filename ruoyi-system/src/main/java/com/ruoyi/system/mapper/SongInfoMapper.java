@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SongInfo;
+import com.ruoyi.system.domain.pojo.song.QueryCodeSongPojo;
 import com.ruoyi.system.domain.pojo.song.QuerySongPojo;
 import com.ruoyi.system.domain.pojo.vo.SongVO;
 import org.apache.ibatis.annotations.Param;
@@ -75,5 +76,40 @@ public interface SongInfoMapper
      * @return
      */
     List<SongVO> selectSongVOListByUserId(QuerySongPojo.Param param);
+
+    /**
+     * 获取下一首歌曲
+     * @param data
+     * @return
+     */
+    SongInfo selectSongInfoNext(QueryCodeSongPojo.Param data);
+
+    /**
+     * 获取第一首歌曲
+     * @param data
+     * @return
+     */
+    SongInfo selectSongInfoFirst(QueryCodeSongPojo.Param data);
+
+    /**
+     * 随机查询一首歌曲
+     * @param data
+     * @return
+     */
+    SongInfo selectSongInfoRandom(QueryCodeSongPojo.Param data);
+
+    /**
+     * 获取上一首歌曲
+     * @param data
+     * @return
+     */
+    SongInfo selectSongInfoPrevious(QueryCodeSongPojo.Param data);
+
+    /**
+     * 获取最后一首歌曲
+     * @param data
+     * @return
+     */
+    SongInfo selectSongInfoEnd(QueryCodeSongPojo.Param data);
 
 }

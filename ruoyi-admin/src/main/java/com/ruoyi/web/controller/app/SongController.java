@@ -7,10 +7,7 @@ import com.ruoyi.common.annotation.TokenCheck;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.exception.LogicException;
 import com.ruoyi.system.domain.pojo.ParamPojo;
-import com.ruoyi.system.domain.pojo.song.BuySongPojo;
-import com.ruoyi.system.domain.pojo.song.CollectSongPojo;
-import com.ruoyi.system.domain.pojo.song.LikeSongPojo;
-import com.ruoyi.system.domain.pojo.song.QuerySongPojo;
+import com.ruoyi.system.domain.pojo.song.*;
 import com.ruoyi.system.domain.pojo.user.LoginPojo;
 import com.ruoyi.system.domain.pojo.user.QueryUserPojo;
 import com.ruoyi.system.service.ISongInfoService;
@@ -48,6 +45,7 @@ public class SongController {
 
     /**
      * 点赞歌曲
+     *
      * @param param
      * @return
      */
@@ -66,6 +64,7 @@ public class SongController {
 
     /**
      * 收藏歌曲
+     *
      * @param param
      * @return
      */
@@ -83,13 +82,14 @@ public class SongController {
 
     /**
      * 购买歌曲
+     *
      * @param param
      * @return
      */
     @PostMapping("buySong")
-    @RequestLimits(t = 10,count = 10)
+    @RequestLimits(t = 10, count = 10)
     @TokenCheck
-    public AjaxResult buySong(@RequestBody ParamPojo<BuySongPojo.Param> param){
+    public AjaxResult buySong(@RequestBody ParamPojo<BuySongPojo.Param> param) {
 
 
         try {
@@ -100,7 +100,6 @@ public class SongController {
         }
 
     }
-
 
 
     /**
@@ -121,6 +120,23 @@ public class SongController {
         }
     }
 
+    /**
+     * 查询歌曲代码
+     * @param param
+     * @return
+     */
+    @PostMapping("queryCodeSong")
+    @RequestLimits(t = 10, count = 10)
+    @TokenCheck
+    public AjaxResult queryCodeSong(@RequestBody ParamPojo<QueryCodeSongPojo.Param> param) {
+        try {
+            param.getData().setUserId(param.getUserId());
+            QueryCodeSongPojo.OutPut outPut = songInfoService.queryCodeSong(param);
+            return AjaxResult.success(outPut);
+        } catch (LogicException e) {
+            return AjaxResult.error(e.getCode(), e.getMessage());
+        }
+    }
 
 
 }

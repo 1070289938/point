@@ -36,7 +36,7 @@ public class SongCode extends BaseEntity {
      * 歌曲id
      */
     @Excel(name = "歌曲id")
-    private Long songId;
+    private Integer songId;
 
     /**
      * 歌曲代码
@@ -60,25 +60,25 @@ public class SongCode extends BaseEntity {
      * 长延迟
      */
     @Excel(name = "长延迟")
-    private Long longTime;
+    private Integer longTime;
 
     /**
      * 默认延迟
      */
     @Excel(name = "默认延迟")
-    private Long defaultTime;
+    private Integer defaultTime;
 
     /**
      * 短延迟
      */
     @Excel(name = "短延迟")
-    private Long shortTime;
+    private Integer shortTime;
 
     /**
      * 超短延迟
      */
     @Excel(name = "超短延迟")
-    private Long veryShortTime;
+    private Integer veryShortTime;
 
     /**
      * 删除时间
@@ -88,16 +88,16 @@ public class SongCode extends BaseEntity {
     private Date deleteTime;
 
 
-    public void initialize(SongInfoData songInfoData, Long id) {
+    public void initialize(SongInfoData songInfoData, Integer id) {
         this.name = songInfoData.getName();
         this.songId = id;
         this.code = songInfoData.getCode();
         this.codeType = songInfoData.getCodeType();
         this.speed = new BigDecimal(songInfoData.getSpeed());
-        this.longTime = Long.getLong(songInfoData.getLongTime());
-        this.defaultTime = Long.getLong(songInfoData.getDefaultTime());
-        this.shortTime = Long.getLong(songInfoData.getShortTime());
-        this.veryShortTime = Long.getLong(songInfoData.getShortTime());
+        this.longTime = Integer.parseInt(songInfoData.getLongTime());
+        this.defaultTime = Integer.parseInt(songInfoData.getDefaultTime());
+        this.shortTime = Integer.parseInt(songInfoData.getShortTime());
+        this.veryShortTime = Integer.parseInt(songInfoData.getShortTime());
 
     }
 

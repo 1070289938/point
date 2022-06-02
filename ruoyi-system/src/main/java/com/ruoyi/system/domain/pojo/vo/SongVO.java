@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain.pojo.vo;
 
+import com.ruoyi.system.domain.SongCode;
 import com.ruoyi.system.domain.SongInfo;
 import lombok.Data;
 
@@ -45,7 +46,14 @@ public class SongVO {
         this.name = song.getName();
     }
 
-
+    public void setSongCode(SongCode songCode){
+        this.code=songCode.getCode();
+        this.speed=songCode.getSpeed().doubleValue();
+        this.longTime=songCode.getLongTime();
+        this.defaultTime=songCode.getDefaultTime();
+        this.shortTime=songCode.getShortTime();
+        this.veryShortTime=songCode.getVeryShortTime();
+    }
 
 
 }

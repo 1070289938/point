@@ -83,7 +83,6 @@ public class AmountRecordServiceImpl implements IAmountRecordService {
         amountRecord.setType(type.getType());
         amountRecord.setCreateTime(new Date());
         amountRecordMapper.insertAmountRecord(amountRecord);
-
     }
 
     /**

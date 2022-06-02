@@ -13,10 +13,7 @@ import com.ruoyi.system.cache.UserInfoCache;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.bean.SongInfoData;
 import com.ruoyi.system.domain.pojo.ParamPojo;
-import com.ruoyi.system.domain.pojo.song.BuySongPojo;
-import com.ruoyi.system.domain.pojo.song.CollectSongPojo;
-import com.ruoyi.system.domain.pojo.song.LikeSongPojo;
-import com.ruoyi.system.domain.pojo.song.QuerySongPojo;
+import com.ruoyi.system.domain.pojo.song.*;
 import com.ruoyi.system.domain.pojo.vo.SongVO;
 import com.ruoyi.system.domain.pojo.vo.UserVO;
 import com.ruoyi.system.mapper.*;
@@ -128,6 +125,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
     /**
      * 查询所有歌曲
+     *
      * @param param
      * @return
      * @throws LogicException
@@ -150,6 +148,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
     /**
      * 给歌曲点赞
+     *
      * @param param
      * @return
      * @throws LogicException
@@ -177,6 +176,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
     /**
      * 收藏歌曲
+     *
      * @param param
      * @return
      * @throws LogicException
@@ -205,6 +205,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
     /**
      * 购买歌曲
+     *
      * @param param
      * @return
      * @throws LogicException
@@ -250,6 +251,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
 
     /**
      * 查询我的歌曲
+     *
      * @param param
      * @return
      * @throws LogicException
@@ -272,7 +274,53 @@ public class SongInfoServiceImpl implements ISongInfoService {
     }
 
     /**
+     * 查询歌曲代码
+     *
+     * @param param
+     * @return
+     * @throws LogicException
+     */
+    @Override
+    public QueryCodeSongPojo.OutPut queryCodeSong(ParamPojo<QueryCodeSongPojo.Param> param) throws LogicException {
+        QueryCodeSongPojo.Param data = param.getData();
+
+        SongInfo songInfo = null;
+        switch (data.getType()) {
+            case 1:
+                songInfo = songInfoMapper.selectSongInfoById(data.getSongId());
+                break;
+            case 2:
+                songInfo = songInfoMapper.selectSongInfoNext(data);
+                if (songInfo == null) {
+                    //如果个没有了就自动跳到第一个
+                    songInfo = songInfoMapper.selectSongInfoFirst(data);
+                }
+                break;
+            case 3:
+                songInfo = songInfoMapper.selectSongInfoRandom(data);
+                break;
+            case 4:
+                songInfo = songInfoMapper.selectSongInfoPrevious(data);
+                if (songInfo==null){
+                    //如果个没有了就自动跳到最后一个
+                    songInfo = songInfoMapper.selectSongInfoEnd(data);
+                }
+        }
+        if (songInfo == null) {
+            throw new LogicException("歌曲查询异常");
+        }
+        SongCode songCode = songCodeMapper.selectSongCodeBySongId(songInfo.getId());
+        SongVO songVO = new SongVO();
+        songVO.setSong(songInfo);
+        songVO.setSongCode(songCode);
+        SongCollect songCollect = songCollectMapper.selectSongCollectIsCollect(param.getUserId(),songInfo.getId());
+        songVO.setCollect(songCollect==null?0:1);
+        return new QueryCodeSongPojo.OutPut(songVO);
+    }
+
+    /**
      * 补充歌曲内容
+     *
      * @param songList
      * @param userId
      * @return
@@ -303,6 +351,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
         }
         return songVOList;
     }
+
 
 
 }

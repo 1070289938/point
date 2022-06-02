@@ -124,7 +124,7 @@
             AND c.delete_time IS NULL
         </if>
         <if test="isPay">
-           where i.price != 0
+            where i.price != 0
         </if>
         <if test="free">
             where i.price = 0
@@ -151,6 +151,85 @@
         </choose>
 
 
+    </select>
+
+
+    <select id="selectSongInfoNext" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
+        SELECT i.*
+        FROM `song_info` i
+        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
+        </if>
+        WHERE i.id > #{songId}
+        AND d.`user_id` = #{userId}
+        <if test="collect">
+            AND c.`user_id` = #{userId}
+        </if>
+        order by i.`id`
+        LIMIT 0,1
+    </select>
+
+    <select id="selectSongInfoFirst" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
+        SELECT i.*
+        FROM `song_info` i
+        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
+        </if>
+        WHERE d.`user_id` = #{userId}
+        <if test="collect">
+            AND c.`user_id` = #{userId}
+        </if>
+        order by i.`id`
+        LIMIT 0,1
+    </select>
+
+    <select id="selectSongInfoRandom" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
+        SELECT i.*
+        FROM `song_info` i
+        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
+        </if>
+        WHERE d.`user_id` = #{userId}
+        <if test="collect">
+            AND c.`user_id` = #{userId}
+        </if>
+        ORDER BY RAND()
+        LIMIT 0,1
+    </select>
+
+
+    <select id="selectSongInfoPrevious" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
+        SELECT i.*
+        FROM `song_info` i
+        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
+        </if>
+        WHERE i.id &lt; #{songId}
+        AND d.`user_id` = #{userId}
+        <if test="collect">
+            AND c.`user_id` = #{userId}
+        </if>
+        order by i.id desc
+        LIMIT 0,1
+    </select>
+
+    <select id="selectSongInfoEnd" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
+        SELECT i.*
+        FROM `song_info` i
+        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
+        <if test="collect">
+            INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
+        </if>
+        WHERE d.`user_id` = #{userId}
+        <if test="collect">
+            AND c.`user_id` = #{userId}
+        </if>
+        order by i.id desc
+        LIMIT 0,1
     </select>
 
 

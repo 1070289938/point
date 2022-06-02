@@ -6,10 +6,7 @@ import com.ruoyi.common.exception.LogicException;
 import com.ruoyi.system.domain.SongInfo;
 import com.ruoyi.system.domain.bean.SongInfoData;
 import com.ruoyi.system.domain.pojo.ParamPojo;
-import com.ruoyi.system.domain.pojo.song.BuySongPojo;
-import com.ruoyi.system.domain.pojo.song.CollectSongPojo;
-import com.ruoyi.system.domain.pojo.song.LikeSongPojo;
-import com.ruoyi.system.domain.pojo.song.QuerySongPojo;
+import com.ruoyi.system.domain.pojo.song.*;
 import com.ruoyi.system.domain.pojo.user.QueryUserPojo;
 
 /**
@@ -107,5 +104,12 @@ public interface ISongInfoService
      */
     QuerySongPojo.OutPut queryMySong(ParamPojo<QuerySongPojo.Param> param)throws LogicException;
 
+    /**
+     * 查询歌曲代码
+     * @param param
+     * @return
+     * @throws LogicException
+     */
+    QueryCodeSongPojo.OutPut queryCodeSong(ParamPojo<QueryCodeSongPojo.Param> param)throws LogicException;
 
 }
