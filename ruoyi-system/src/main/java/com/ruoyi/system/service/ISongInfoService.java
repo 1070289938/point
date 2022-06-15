@@ -112,4 +112,7 @@ public interface ISongInfoService
      */
     QueryCodeSongPojo.OutPut queryCodeSong(ParamPojo<QueryCodeSongPojo.Param> param)throws LogicException;
 
+
+    SongInfo selectSongInfobyDetails(String s);
+
 }

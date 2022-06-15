@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QueryKeywordMapper">
+
+    <resultMap type="QueryKeyword" id="QueryKeywordResult">
+        <result property="id" column="id"/>
+        <result property="key" column="query_key"/>
+        <result property="count" column="query_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectQueryKeywordVo">
+        select id, query_key, query_count, create_time, update_time
+        from query_keyword
+    </sql>
+
+    <select id="selectQueryKeywordList" parameterType="QueryKeyword" resultMap="QueryKeywordResult">
+        <include refid="selectQueryKeywordVo"/>
+        <where>
+            <if test="key != null  and key != ''">and query_key = #{key}</if>
+            <if test="count != null ">and query_count = #{count}</if>
+        </where>
+    </select>
+
+    <select id="selectQueryKeywordById" parameterType="Long" resultMap="QueryKeywordResult">
+        <include refid="selectQueryKeywordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertQueryKeyword" parameterType="QueryKeyword" useGeneratedKeys="true" keyProperty="id">
+        insert into query_keyword
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="key != null">query_key,</if>
+            <if test="count != null">query_count,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="key != null">#{key},</if>
+            <if test="count != null">#{count},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQueryKeyword" parameterType="QueryKeyword">
+        update query_keyword
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="key != null">query_key = #{key},</if>
+            <if test="count != null">query_count = #{count},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQueryKeywordById" parameterType="Long">
+        delete
+        from query_keyword
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteQueryKeywordByIds" parameterType="String">
+        delete from query_keyword where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectQueryKeywordByKey" resultMap="QueryKeywordResult">
+        select *
+        from `query_keyword`
+        where `query_key` = #{name}
+    </select>
+
+    <select id="selectQueryKeywordHot" resultType="String">
+        select `query_key`
+        from `query_keyword`
+        order by `query_count` desc limit 0,10
+    </select>
+
+
+</mapper>

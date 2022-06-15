@@ -18,6 +18,7 @@ import com.ruoyi.system.domain.pojo.vo.SongVO;
 import com.ruoyi.system.domain.pojo.vo.UserVO;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IAmountRecordService;
+import com.ruoyi.system.service.IQueryKeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.service.ISongInfoService;
@@ -45,6 +46,8 @@ public class SongInfoServiceImpl implements ISongInfoService {
     private SongCollectMapper songCollectMapper;
     @Autowired
     private IAmountRecordService amountRecordService;
+    @Autowired
+    private IQueryKeywordService queryKeywordService;
 
     /**
      * 查询歌曲详情
@@ -132,6 +135,10 @@ public class SongInfoServiceImpl implements ISongInfoService {
      */
     @Override
     public QuerySongPojo.OutPut querySong(ParamPojo<QuerySongPojo.Param> param) throws LogicException {
+
+        if (param.getData().getName() != null) {
+            queryKeywordService.addQueryKeyword(param.getData().getName());
+        }
 
         PageMethod.startPage(param.getData().getPage(), param.getData().getSize());
         param.getData().setUserId(param.getUserId());
@@ -301,7 +308,7 @@ public class SongInfoServiceImpl implements ISongInfoService {
                 break;
             case 4:
                 songInfo = songInfoMapper.selectSongInfoPrevious(data);
-                if (songInfo==null){
+                if (songInfo == null) {
                     //如果个没有了就自动跳到最后一个
                     songInfo = songInfoMapper.selectSongInfoEnd(data);
                 }
@@ -313,10 +320,16 @@ public class SongInfoServiceImpl implements ISongInfoService {
         SongVO songVO = new SongVO();
         songVO.setSong(songInfo);
         songVO.setSongCode(songCode);
-        SongCollect songCollect = songCollectMapper.selectSongCollectIsCollect(param.getUserId(),songInfo.getId());
-        songVO.setCollect(songCollect==null?0:1);
+        SongCollect songCollect = songCollectMapper.selectSongCollectIsCollect(param.getUserId(), songInfo.getId());
+        songVO.setCollect(songCollect == null ? 0 : 1);
         return new QueryCodeSongPojo.OutPut(songVO);
     }
+
+    @Override
+    public SongInfo selectSongInfobyDetails(String s) {
+        return songInfoMapper.selectSongInfobyDetails(s);
+    }
+
 
     /**
      * 补充歌曲内容
@@ -351,7 +364,6 @@ public class SongInfoServiceImpl implements ISongInfoService {
         }
         return songVOList;
     }
-
 
 
 }

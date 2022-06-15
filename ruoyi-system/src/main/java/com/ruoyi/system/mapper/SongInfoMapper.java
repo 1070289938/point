@@ -112,4 +112,8 @@ public interface SongInfoMapper
      */
     SongInfo selectSongInfoEnd(QueryCodeSongPojo.Param data);
 
+    SongInfo selectSongInfobyDetails(@Param("s") String s);
+
+
+
 }

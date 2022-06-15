@@ -129,6 +129,14 @@
         <if test="free">
             where i.price = 0
         </if>
+        <if test="recommend">
+            where i.`user_id` = 1
+        </if>
+        <if test="name !=null and name !='' ">
+            where i.name like concat('%',#{name},'%')
+        </if>
+
+        order by i.create_time desc
 
     </select>
 
@@ -149,53 +157,60 @@
                 WHERE d.`user_id`=#{userId}
             </otherwise>
         </choose>
-
-
+        order by d.create_time
     </select>
 
 
     <select id="selectSongInfoNext" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
         SELECT i.*
         FROM `song_info` i
-        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
         <if test="collect">
             INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
         </if>
-        WHERE i.id > #{songId}
-        AND d.`user_id` = #{userId}
+        WHERE i.id &lt; #{songId}
         <if test="collect">
             AND c.`user_id` = #{userId}
         </if>
-        order by i.`id`
+        <if test="recommend">
+            AND i.`user_id` = 1
+        </if>
+        order by i.id desc
         LIMIT 0,1
     </select>
 
     <select id="selectSongInfoFirst" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
         SELECT i.*
         FROM `song_info` i
-        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
         <if test="collect">
             INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
         </if>
-        WHERE d.`user_id` = #{userId}
-        <if test="collect">
-            AND c.`user_id` = #{userId}
-        </if>
-        order by i.`id`
+        <where>
+            <if test="collect">
+                AND c.`user_id` = #{userId}
+            </if>
+            <if test="recommend">
+                AND i.`user_id` = 1
+            </if>
+        </where>
+
+        order by i.id desc
         LIMIT 0,1
     </select>
 
     <select id="selectSongInfoRandom" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
         SELECT i.*
         FROM `song_info` i
-        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
         <if test="collect">
             INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
         </if>
-        WHERE d.`user_id` = #{userId}
-        <if test="collect">
-            AND c.`user_id` = #{userId}
-        </if>
+        <where>
+            <if test="collect">
+                AND c.`user_id` = #{userId}
+            </if>
+            <if test="recommend">
+                AND i.`user_id` = 1
+            </if>
+        </where>
         ORDER BY RAND()
         LIMIT 0,1
     </select>
@@ -204,32 +219,42 @@
     <select id="selectSongInfoPrevious" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
         SELECT i.*
         FROM `song_info` i
-        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
         <if test="collect">
             INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
         </if>
-        WHERE i.id &lt; #{songId}
-        AND d.`user_id` = #{userId}
+        WHERE i.id > #{songId}
         <if test="collect">
             AND c.`user_id` = #{userId}
         </if>
-        order by i.id desc
+        <if test="recommend">
+            AND i.`user_id` = 1
+        </if>
+        order by i.id
         LIMIT 0,1
     </select>
 
     <select id="selectSongInfoEnd" resultMap="SongInfoResult" parameterType="QueryCodeSongPojo">
         SELECT i.*
         FROM `song_info` i
-        INNER JOIN `song_download` d ON d.`song_id` = i.`id`
         <if test="collect">
             INNER JOIN `song_collect` c ON c.`song_id` = i.`id`
         </if>
-        WHERE d.`user_id` = #{userId}
-        <if test="collect">
-            AND c.`user_id` = #{userId}
-        </if>
-        order by i.id desc
+        <where>
+            <if test="collect">
+                AND c.`user_id` = #{userId}
+            </if>
+            <if test="recommend">
+                AND i.`user_id` = 1
+            </if>
+        </where>
+        order by i.id
         LIMIT 0,1
+    </select>
+
+    <select id="selectSongInfobyDetails" resultMap="SongInfoResult">
+        select *
+        from `song_info`
+        where details = #{s}
     </select>
 
 

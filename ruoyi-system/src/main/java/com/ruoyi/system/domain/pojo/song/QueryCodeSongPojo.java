@@ -14,6 +14,8 @@ public class QueryCodeSongPojo {
         private Integer type;
         //是否是收藏
         private boolean collect;
+        //推荐歌曲
+        private Boolean  recommend;
         //用户id
         private Integer userId;
     }

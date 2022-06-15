@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -176,30 +177,19 @@ public class UserInfoServiceImpl implements IUserInfoService {
         if (code == null) {
             throw new LogicException(LogicException.Type.PARAM_ERROR, "注册码不存在!");
         }
-        UserInfo recommendUser = null;
-        //邀请码不等于空的话看看邀请码是否正确
-        if (!StringUtils.isEmpty(param.getParentRecommendCode())) {
-            recommendUser = userInfoMapper.selectUserByRecommendCode(param.getParentRecommendCode());
-            if (recommendUser == null) {
-                throw new LogicException(LogicException.Type.PARAM_ERROR, "无此邀请码!");
-            }
+
+        if (code.getUserId() != null) {
+            throw new LogicException(LogicException.Type.PARAM_ERROR, "注册码已被使用!");
         }
+
+
         userInfo = new UserInfo();
-        String recommendCode;
-        do {
-            recommendCode = IdUtils.fastSimpleUUID().substring(0, 10);
-            UserInfo user = userInfoMapper.selectUserByRecommendCode(recommendCode);
-            if (user == null) break;
-        } while (true);
+        String recommendCode = "null";
         userInfo.initialize(param.getAccount(), param.getPassword(), recommendCode, param.getParentRecommendCode(), code.getQq());
         userInfoMapper.insertUserInfo(userInfo);
-
-        //注册成功 如果邀请码存在的话给邀请用户和输入邀请码用户进行金额奖励
-        if (recommendUser != null) {
-            amountRecordService.addAmountRecord(recommendUser.getId(), 100L, AmountRecordEnum.INVITE_REWARDS);
-            amountRecordService.addAmountRecord(userInfo.getId(), 500L, AmountRecordEnum.INVITATION_CODE_REWARD);
-        }
-
+        code.setUserId(userInfo.getId());
+        code.setHoursUse(new Date());
+        registrationCodeMapper.updateRegistrationCode(code);
         UserVO userVO = UserVO.getUserVo(userInfo);
         String token = userTokenCache.updateToken(userInfo);
 
@@ -250,7 +240,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
             if (userInfo.getChangeAccount() == 0) {
                 throw new LogicException(LogicException.Type.ERROR, "账号只能修改一次!");
             }
-            if (userInfoMapper.selectUserByUserName(newData.getAccount())!=null){
+            if (userInfoMapper.selectUserByUserName(newData.getAccount()) != null) {
                 throw new LogicException(LogicException.Type.PARAM_ERROR, "这个账号已经被注册过啦!");
             }
 

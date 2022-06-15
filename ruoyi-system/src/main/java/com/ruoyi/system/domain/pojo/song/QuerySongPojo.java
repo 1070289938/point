@@ -14,12 +14,16 @@ public class QuerySongPojo {
         private Integer size;
         //是否收藏
         private Boolean collect;
+        //推荐歌曲
+        private Boolean  recommend;
         //用户id
         private Integer userId;
         //是否付费
         private Boolean isPay;
         //是否免费
         private Boolean free;
+        //模糊查询歌曲名称
+        private String name;
     }
 
     @Data
